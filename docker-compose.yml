@@ -1,0 +1,38 @@
+version: "1.0"
+name: "NSProject"
+services:
+  mysqlserver:
+    container_name: MySQLServer
+    build: ./MySQLServer/
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - sqlNetwork
+    expose:
+      - 3306
+  vulnerable:
+    container_name: TomPC
+    build: ./VulnerableHost/
+    tty: true
+    depends_on:
+      - mysqlserver
+    networks:
+      - lanNetwork
+      - sqlNetwork
+    expose:
+      - 22
+    ports:
+      - 8080:8080
+  pentesting:
+    container_name: BobPC
+    build: ./PentestingHost/
+    tty: true
+    networks:
+      - lanNetwork
+    ports:
+      - 2222:22
+networks:
+  sqlNetwork: 
+    driver: bridge
+  lanNetwork: 
+    driver: bridge
+  
