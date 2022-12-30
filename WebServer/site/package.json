@@ -1,11 +1,10 @@
 {
   "name": "ns_vulnerable_host",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Example vulnerable host",
   "main": "backend/app/index.js",
   "scripts": {
-    "start": "node backend/app/index.js",
-    "dev": "nodemon"
+    "start": "node backend/app/index.js"
   },
   "keywords": [
     "Network",
@@ -20,7 +19,7 @@
     "html"
   ],
   "author": "Tony177",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",

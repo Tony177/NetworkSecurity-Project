@@ -25,7 +25,7 @@ router.post("/", function (request, response) {
     if (username && password) {
         // Execute SQL query that'll select the account from the database based on the specified username and password
         // ON PURPOSE NOT SANIFICATING QUERY
-        const dang_query = `SELECT * FROM Client WHERE Username = "${username}"`;
+        const dang_query = `SELECT * FROM Employee WHERE Username = "${username}"`;
         config.pool.query(
             { sql: dang_query, rowAsArray: true },
             function (error, results) {

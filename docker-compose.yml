@@ -1,38 +1,46 @@
 version: "1.0"
 name: "NSProject"
 services:
-  mysqlserver:
-    container_name: MySQLServer
-    build: ./MySQLServer/
-    command: --default-authentication-plugin=mysql_native_password
-    networks:
-      - sqlNetwork
-    expose:
-      - 3306
-  vulnerable:
-    container_name: TomPC
-    build: ./VulnerableHost/
-    tty: true
-    depends_on:
-      - mysqlserver
-    networks:
-      - lanNetwork
-      - sqlNetwork
-    expose:
-      - 22
-    ports:
-      - 8080:8080
-  pentesting:
-    container_name: BobPC
-    build: ./PentestingHost/
-    tty: true
-    networks:
-      - lanNetwork
-    ports:
-      - 2222:22
+    mysqlserver:
+        container_name: MySQLServer
+        build: ./MySQLServer/
+        command: --default-authentication-plugin=mysql_native_password
+        networks:
+            - WebNetwork
+        expose:
+            - 3306
+
+    webserver:
+        container_name: WebServer
+        build: ./WebServer/
+        depends_on:
+            - mysqlserver
+        environment:
+            - NODE_ENV=production
+        ports:
+            - 8080:8080
+        networks:
+            - WebNetwork
+
+    vulnerable:
+        container_name: TomPC
+        build: ./TomPC/
+        tty: true
+        networks:
+            - LanNetwork
+        expose:
+            - 22
+
+    pentesting:
+        container_name: BobPC
+        build: ./BobPC/
+        tty: true
+        networks:
+            - LanNetwork
+        ports:
+            - 2222:22
 networks:
-  sqlNetwork: 
-    driver: bridge
-  lanNetwork: 
-    driver: bridge
-  
+    WebNetwork:
+        driver: bridge
+    LanNetwork:
+        driver: bridge
