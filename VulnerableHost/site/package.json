@@ -7,7 +7,6 @@
     "start": "node backend/app/index.js",
     "dev": "nodemon"
   },
-
   "keywords": [
     "Network",
     "Security",
@@ -29,7 +28,6 @@
     "express": "^4.17.3",
     "express-rate-limit": "^6.3.0",
     "express-session": "^1.17.2",
-    "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "ol": "^7.1.0"
   },
