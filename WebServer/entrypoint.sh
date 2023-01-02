@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-cd /home/node/app/site
+cd /app/
 npm install --quiet 
-../wait-for-it.sh MySQLServer:3306 -- npm run start
+/wait-for-it.sh MySQLServer:3306 -- npm run start

@@ -9,7 +9,7 @@ app.use(config.express.json());
 
 app.use(config.express.static(frontend_path)); //per rilevare i file css
 
-app.use("/api/login", login);
+app.use("/", login);
 
 app.listen(config.PORT, () => {
   console.log("[BACKEND] Start listening on port:" + config.PORT);
