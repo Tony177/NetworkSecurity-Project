@@ -44,9 +44,6 @@ services:
 networks:
     WebNetwork:
         driver: bridge
-        ipam:
-            config:
-                - subnet
     EmployeeNetwork:
         driver: bridge
     CompanyNetwork:
