@@ -4,7 +4,7 @@ Network Security project about SSH, Database and SQL Injection.
 
 # Network Scheme
 
-![Network](Image/network_scheme.svg)
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/network_scheme.svg" width=500>
 
 -   Sql Network
     1. Web Server hosting a stub site using NodeJS
@@ -56,10 +56,10 @@ Using then `nmap` tool with these options:
 We found out some host IP:
 
 **_Company Network_**
-![Company Network](Image/company_network.png)
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/company_network.png" width=500>
 
 **_Employee Network_**
-![Employee Network](Image/employee_network.png)
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/employee_network.png" width=500>
 
 ## Enumeration
 
@@ -67,18 +67,18 @@ We're interested in the Web Server and in Tom PC, so we can scan more aggressive
 
 If we use simply a TPC SYN scan from nmap, we find vague information:
 
-![Web Server SS scan](Image/webserver_ss.png)
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_ss.png" width=500>
 
 Else, if we explore more with a Version Detection scan, we can scan even beyond the typical use of a port like 8080:
 
-![Web Server SV scan](Image/webserver_sv.png)
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sv.png" width=500>
 and we find about a web server open on port 8080.
 
 Meanwhile on Tom PC we found an open SSH port
-![Tom PC SV scan](Image/tom_sv.png)
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/tom_sv.png" width=500>
 We can think about SSH after getting information about the site.
 Now we can find about this site (in a real case scenario we should use DirBuster to map the entire site) and the main page.
-![cURL webserver](Image/webserver_curl.png)
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.png" width=500>
 We retrived the html page using `curl` and found out about a login form, which we can try to exploit.
 
 ## Exploitation
@@ -106,7 +106,7 @@ curl -X POST -d 'username=" OR 1<2; -- &password=b' 172.19.0.4:8080
 ```
 
 which return us a bunch of credentials
-![Web Server SQL](Image/webserver_sql.png)
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.png" width=500>
 including only one user called Tom with:
 
 ```
