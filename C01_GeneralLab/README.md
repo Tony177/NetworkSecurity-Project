@@ -6,7 +6,7 @@ Network Security project about SSH, Database and SQL Injection.
 
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/network_scheme.svg" width=500>
 
--   Sql Network
+-   Web Network
     1. Web Server hosting a stub site using NodeJS
     2. MySQL Server hosting sensitive information
 -   Employee Network
@@ -33,6 +33,8 @@ During the demostration scenario we found out these IP:
 And we don't have any access to the Web network
 
 # Instruction: what to do
+
+You can start connecting to the pentesting PC with SSH using 2222 port
 
 1. Footprinting: gather information online about the organization
 2. Scanning: scan vulnerable point of access
