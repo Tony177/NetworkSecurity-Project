@@ -147,7 +147,7 @@ We have to find another way to gain elevated privileges, let's find files with t
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid.PNG" width=400>
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid2.PNG" width=500>
 
-The Set User IDentity bit allow users to run executables with the file system permissions of the executable's owner to perform a specific task, in this case with root privileges.
+The Set User IDentity bit allows users to run executables with the file system permissions of the executable's owner to perform a specific task, in this case with root privileges.
 
 In /home/tcasaccio1 there is a file with the SUID bit set, let's see if we can exploit this program:
 
