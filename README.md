@@ -83,7 +83,7 @@ Meanwhile on Tom PC we found an open SSH port
 We can think about SSH after getting information about the site.
 Now we can find about this site (in a real case scenario we should use DirBuster to map the entire site) and the main page.
 
-<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.PNG" width=500>
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.png" width=500>
 
 We retrived the html page using `curl` and found out about a login form, which we can try to exploit.
 
@@ -113,7 +113,7 @@ curl -X POST -d 'username=" OR 1<2; -- &password=b' 193.20.3.1:8080
 
 which return us a bunch of credentials
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.png" width=700>
 
 including only one user called Tom with:
 
