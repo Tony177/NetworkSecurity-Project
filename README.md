@@ -55,10 +55,10 @@ Using then `nmap` tool with these options:
 We found out some host IP:
 
 **_Company Network_**
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_company_network.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_company_network.PNG" width=500>
 
 **_Employee Network_**
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_employee_network.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_employee_network.PNG" width=500>
 
 ## Enumeration
 
@@ -66,18 +66,18 @@ We're interested in the Web Server and in Tom PC, so we can scan more aggressive
 
 If we use simply a TPC SYN scan from nmap, we find vague information:
 
-<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_company_ss.png" width=500>
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_company_ss.PNG" width=500>
 
 Else, if we explore more with a Version Detection scan, we can scan even beyond the typical use of a port like 8080:
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/enumeration_company_sv.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/enumeration_company_sv.PNG" width=500>
 and we find about a web server open on port 8080.
 
 Meanwhile on Tom PC we found an open SSH port
-<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_tom_sv.png" width=500>
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_tom_sv.PNG" width=500>
 We can think about SSH after getting information about the site.
 Now we can find about this site (in a real case scenario we should use DirBuster to map the entire site) and the main page.
-<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.png" width=500>
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.PNG" width=500>
 We retrived the html page using `curl` and found out about a login form, which we can try to exploit.
 
 ## Exploitation
@@ -105,7 +105,7 @@ curl -X POST -d 'username=" OR 1<2; -- &password=b' 193.20.3.1:8080
 ```
 
 which return us a bunch of credentials
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.PNG" width=500>
 including only one user called Tom with:
 
 ```
@@ -126,20 +126,20 @@ ssh tcasaccio1@193.20.1.3
 # Privilege Escalation Procedure
 
 From the ssh entrypoint on TomPC, we can trace our privileges on the machine and which files we can access:
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_whoami.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_whoami.PNG" width=500>
 
 As we can see, user tcasaccio1 doesn't belong to sudo group, let's see if we can access to /etc/passwd and then to /etc/shadow to retrieve hashed passwords:
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_passwd.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_passwd.PNG" width=500>
 
 We have to find another way to gain elevated privileges, let's find files with the SUID bit set:
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid.png" width=500>
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid2.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid.PNG" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid2.PNG" width=500>
 
 The Set User IDentity bit allow users to run executables with the file system permissions of the executable's owner to perform a specific task, in this case with root privileges.
 
 In /home/tcasaccio1 there is a file with the SUID bit set, let's see if we can exploit this program:
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_program.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_program.PNG" width=500>
 
 In this case, we can modify the USER environment variable by creating an environment variable injection.
 
@@ -149,6 +149,6 @@ export USER="; /bin/bash; echo ":tcasaccio1
 
 Obtaining this behaviour by the program:
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_exploit.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_exploit.PNG" width=500>
 
 So now we have root permissions on the machine.
