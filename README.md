@@ -20,17 +20,16 @@ Network Security project about SSH, Database and SQL Injection.
 
 This lab is about a industrial espionage, represented by Bob, who is infiltrated inside a company lan network and found, among a lot of other devices, one vulnerable computer that belongs to Tom and an useful site open ONLY inside the company network.
 
-During the demostration scenario we found out these IP:
+During the demostration scenario we found out these IP from 2 different subnets:
 
--   _172.19.0.1_ - Company Network
--   _172.19.0.2_ - Bob PC on company network
--   _172.19.0.3_ - Tom PC on company network
--   _172.19.0.4_ - Web Server on company network
--   _172.20.0.1_ - Employee Network
--   _172.20.0.2_ - Bob PC on employee network
--   _172.20.0.3_ - Tom PC on employee network
+-   _193.20.3.1_ - Company Network
+-   _193.20.3.2_ - Bob PC on company network
 
-And we don't have any access to the Web network
+-   _193.20.1.1_ - Employee Network
+-   _193.20.1.2_ - Bob PC on employee network
+-   _193.20.1.3_ - Tom PC on employee network
+
+And we don't have any access to the Web network.
 
 # Instruction: what to do
 
@@ -56,10 +55,10 @@ Using then `nmap` tool with these options:
 We found out some host IP:
 
 **_Company Network_**
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/company_network.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_company_network.png" width=500>
 
 **_Employee Network_**
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/employee_network.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_employee_network.png" width=500>
 
 ## Enumeration
 
@@ -67,15 +66,15 @@ We're interested in the Web Server and in Tom PC, so we can scan more aggressive
 
 If we use simply a TPC SYN scan from nmap, we find vague information:
 
-<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_ss.png" width=500>
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_company_ss.png" width=500>
 
 Else, if we explore more with a Version Detection scan, we can scan even beyond the typical use of a port like 8080:
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sv.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/enumeration_company_sv.png" width=500>
 and we find about a web server open on port 8080.
 
 Meanwhile on Tom PC we found an open SSH port
-<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/tom_sv.png" width=500>
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_tom_sv.png" width=500>
 We can think about SSH after getting information about the site.
 Now we can find about this site (in a real case scenario we should use DirBuster to map the entire site) and the main page.
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.png" width=500>
@@ -86,13 +85,13 @@ We retrived the html page using `curl` and found out about a login form, which w
 We can try some usual combination for the form
 
 ```bash
-curl -X POST -d 'username=a&password=b' 172.19.0.4:8080
+curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
 ```
 
 Which returns "Error value(s) missing"
 
 ```bash
-curl -X POST -d 'username=&password=b' 172.19.0.4:8080
+curl -X POST -d 'username=&password=b' 193.20.3.1:8080
 ```
 
 Which returns
@@ -102,7 +101,7 @@ Which returns
 and we can try last one with MySQL injection using OR and commenting syntax
 
 ```bash
-curl -X POST -d 'username=" OR 1<2; -- &password=b' 172.19.0.4:8080
+curl -X POST -d 'username=" OR 1<2; -- &password=b' 193.20.3.1:8080
 ```
 
 which return us a bunch of credentials
@@ -121,7 +120,35 @@ Now that we gather those information, we can hope that the only user we know has
 We can try to log in using:
 
 ```bash
-ssh tcasaccio1@172.20.0.3
+ssh tcasaccio1@193.20.1.3
 ```
 
-# SQL Injection Procedure
+# Privilege Escalation Procedure
+
+From the ssh entrypoint on TomPC, we can trace our privileges on the machine and which files we can access:
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_whoami.png" width=500>
+
+As we can see, user tcasaccio1 doesn't belong to sudo group, let's see if we can access to /etc/passwd and then to /etc/shadow to retrieve hashed passwords:
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_passwd.png" width=500>
+
+We have to find another way to gain elevated privileges, let's find files with the SUID bit set:
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid.png" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid2.png" width=500>
+
+The Set User IDentity bit allow users to run executables with the file system permissions of the executable's owner to perform a specific task, in this case with root privileges.
+
+In /home/tcasaccio1 there is a file with the SUID bit set, let's see if we can exploit this program:
+
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_program.png" width=500>
+
+In this case, we can modify the USER environment variable by creating an environment variable injection.
+
+```bash
+export USER="; /bin/bash; echo ":tcasaccio1
+```
+
+Obtaining this behaviour by the program:
+
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_exploit.png" width=500>
+
+So now we have root permissions on the machine.
