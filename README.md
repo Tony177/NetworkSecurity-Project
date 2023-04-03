@@ -75,6 +75,7 @@ and we find about a web server open on port 8080.
 
 Meanwhile on Tom PC we found an open SSH port
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_tom_sv.PNG" width=500>
+
 We can think about SSH after getting information about the site.
 Now we can find about this site (in a real case scenario we should use DirBuster to map the entire site) and the main page.
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.PNG" width=500>
@@ -105,7 +106,7 @@ curl -X POST -d 'username=" OR 1<2; -- &password=b' 193.20.3.1:8080
 ```
 
 which return us a bunch of credentials
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.PNG" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.png" width=500>
 including only one user called Tom with:
 
 ```
@@ -126,14 +127,17 @@ ssh tcasaccio1@193.20.1.3
 # Privilege Escalation Procedure
 
 From the ssh entrypoint on TomPC, we can trace our privileges on the machine and which files we can access:
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_whoami.PNG" width=500>
+
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_whoami.PNG" width=300>
 
 As we can see, user tcasaccio1 doesn't belong to sudo group, let's see if we can access to /etc/passwd and then to /etc/shadow to retrieve hashed passwords:
+
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_passwd.PNG" width=500>
 
 We have to find another way to gain elevated privileges, let's find files with the SUID bit set:
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid.PNG" width=500>
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid2.PNG" width=500>
+
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid.PNG" width=200>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/privilege_escalation_suid2.PNG" width=400>
 
 The Set User IDentity bit allow users to run executables with the file system permissions of the executable's owner to perform a specific task, in this case with root privileges.
 
