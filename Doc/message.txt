@@ -1,0 +1,65 @@
+Introduzione
+Configurazione di rete
+
+
+Attacco 
+Footprinting 
+Scanning
+Enumeration
+Exploitation
+	Sql injection
+	SSH access
+	Privilege escalation
+
+
+Difesa e contromisure
+
+
+
+
+
+
+Introduzione
+Nell'elaborato verrà emulato un esempio di attacco di spionaggio industriale. L'attaccante Bob è infiltrato all'interno della rete locale di un'azienda e sfrutta delle vulnerabilità per ottenere accesso privilegiato all'intero sistema. Le vulnerabilità riguardano: un web server locale all'azienda che effettua delle richieste non sicure al database; un computer vulnerabile dell'impiegato Tom.
+
+L'intero esempio è compatibile con la piattaforma Docker Security Playground(DSP), con la quale si può emulare lo scenario d'attacco.
+
+Configurazione di rete
+
+Lo schema di rete è il seguente:
+img_rete
+
+
+Sql Network: collega il web server al database
+Web Server, effettua l'hosting di un sito web fittizio sviluppato con framework NodeJS
+MySQL Server, mantiene le informazioni sensibili dell'azienda
+
+Employee Network: collega tutti gli impiegati dell'organizzazione
+BobPC, che rappresenta l'host attaccante
+TomPC, che rappresenta l'host target
+
+Company Network: 
+Collega tutti gli impiegati al servizio web dell'azienda.
+
+Attacco
+
+Footprinting:
+La fase di footprinting prevede di raccogliere informazioni in rete riguardante il target, nel nostro caso l'organizzazione e i suoi membri. In questo scenario l'attaccante conosce già delle informazioni riguardante l'azienda e si è riuscito a connettere alla rete locale target. Tramite il tool ifconfig scopre le sottoreti alle quali è connesso: Employee Network, Company Network.
+screen ifconfig
+
+Con il tool nmap, l'attaccante scopre la topologia delle varie sottoreti interne all'organizzazione, individuando gli ip target del web server e dei computer degli impiegati.
+screen comandi
+
+Scanning:
+In questa fase si perlustra l'intero perimetro di rete, tramite l'invio di pacchetti probe, al fine di individuare potenziali punti di accesso ai sistemi dell'azienda. Si sfrutta il tool nmap, robba da scrivere su nmap.. 
+
+L'attaccante Bob sfrutta il seguente comando di nmap per scoprire i servizi aperti sugli host potenziali target:
+comandi solo con -sS
+
+Enumeration:
+Dopo aver scoperto i potenziali punti di ingresso sui singoli host è necessario scoprire ulteriori informazioni riguardanti i servizi aperti sulle singole porte. In fase di enumerazione si creano delle connessioni attive verso i servizi, utilizzando il tool nmap con gli opportuni flag. 
+
+L'attaccante sfrutta il flag -sV per ottenere la versione dei servizi presenti sugli host target: 
+immagine -sV 
+
+Exploitation;

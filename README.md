@@ -56,11 +56,11 @@ Using then `nmap` tool with these options:
 
 We found out some host IP:
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_company_network.PNG" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_company_network.PNG" width=500>
 
 **_Company Network_**
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/scanning_employee_network.PNG" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_employee_network.PNG" width=500>
 
 **_Employee Network_**
 
