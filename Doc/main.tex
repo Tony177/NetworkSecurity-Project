@@ -17,7 +17,6 @@ top=    1 in
 \usepackage{fancyhdr}
 
 % Grafica
-\usepackage{graphicx,pstricks}
 \usepackage{graphics}
 \graphicspath{{img/}}
 
@@ -44,14 +43,6 @@ top=    1 in
 \rhead{\footnotesize{Elaborato Network Security}}
 }
 
-%Other
-\usepackage{comment}
-\usepackage{amsmath}
-
-%Testo riempitivo
-\usepackage{lipsum}
-
-
 
 
 \begin{document}
@@ -66,23 +57,25 @@ top=    1 in
 
 \mainmatter
 \chapter{Footprinting}
-The footprinting phase involves gathering information in the network regarding the target,in our case the organization and its members.
+The footprinting phase involves gathering information in the network regarding the target, in our case the organization and its members.
 \newline In this scenario, the attacker already knows information regarding the company and has managed to connect to the target local network.
-\newline Through the ifconfig tool he discovers the subnets to which he is connected: Employee Network, Company Network.
+\newline Through the \textit{ifconfig} tool, he discovers the subnets to which he is connected: Employee Network, Company Network.
 \newline ifconfig screen
-\newline Using the nmap tool, the attacker discovers the topology of the various subnets within the organization, identifying the target ip's of the web server and employee computers
+\newline Using the \textit{nmap} tool, the attacker discovers the topology of the various subnets within the organization, identifying the IPs of potential target nodes.
 \begin{center}
 \includegraphics[scale=1]{../Image/footprinting_company_network.png}
 \end{center}
 \begin{lstlisting}
   nmap -sn -PE --send-ip 193.20.3.0/24
 \end{lstlisting}
-From the top scan of the IP range 193.20.3.0/24 Bob found out one host up at 193.20.3.1 and his MAC Address.
 \begin{center}
 \includegraphics[scale=0.76]{../Image/footprinting_employee_network.png}
 \end{center}
+From the top scan of the IP range 193.20.3.0/24, Bob found out one host up at 193.20.3.1 and its MAC Address. On the other subnet 193.20.1.0/24, there is another host up with the address 193.20.1.2.
+
 \newpage
 \chapter{Scanning}
+In this phase, the attacker explore the entire network perimeter by sending probe packets to endpoints with the goal of identify potential access points in the company systems.   
 Nmap (Network Mapper) is a versatile and powerful tool with a range of options and features. Here are some of the main options:
 \begin{itemize}
   \item Host Discovery: This option is used to discover hosts on a network. Nmap can identify active hosts, as well as those that are currently offline.
@@ -105,5 +98,44 @@ It has a number of flags or options that can be used to customize and fine-tune 
   \item \textbf{-oN}: This flag specifies the output format for Nmap results, in this case, plain text format.
   \item \textbf{-oN}: This option is used to specify the output format of the scan results. For example, the command "nmap -oN output.txt" will save the scan results to a file called "output.txt".
 \end{itemize}
-These are just a few examples of the flag options available in Nmap.
+The attacker Bob exploits the following nmap command to discover open services on the target host 193.20.3.1:
+\begin{center}
+  \includegraphics[scale=0.76]{../Image/scanning_company_ss.PNG}
+\end{center}
+From the scan report, there are multiple open ports: \textit{http} on 8080, \textit{mysql} on 3306 and \textit{ssh} on 22. The attacker can assume that the target host 193.20.3.1 is a Web Server.
+\newline Then, he does the same for the node on the other subnet: (manca screen)
+\begin{center}
+  \includegraphics[scale=0.76]{../Image/enumeration_tom_sv.PNG}
+\end{center}
+From the scan report, there is only an open SSH 22/Tcp port.
+
+\chapter{Enumeration}
+After discovering the potential access points on the hosts, it is necessary to reveal other information regarding the active services on the detected ports. In the enumeration phase,
+active connections are created towards the target services by using the nmap tool with appropriate flags. This phase is more dangerous and traceable than the previous techniques because it requires an higher level of intrusiveness.
+\newline The objective of this phase is the service fingerprinting, i.e. the detection of the specific version and implementation of the service through an analysis of the service behaviour. 
+\newline The attacker uses the nmap flag -sV, which compares answers obtained with a service fingerprint database, to determine services version on the Web Server:
+\begin{center}
+\includegraphics[scale=0.76]{../Image/enumeration_company_sv.PNG}
+\end{center}
+The attacker grabs information about the Web Server: it is implemented with NodeJS and has a connection with a mySQL Database. Then, he does the same for the Employee computer:
+\begin{center}
+\includegraphics[scale=0.76]{../Image/enumeration_tom_sv.PNG}
+\end{center}
+On the other host, nmap determines that: the ssh service is implemented with a specific version of OpenSSH and the OS family is Ubuntu Linux. 
+
+\chapter{Exploitation}
+After discovering the potential access points on the hosts, it is necessary to reveal other information regarding the active services on the detected ports. In the enumeration phase,
+active connections are created towards the target services by using the nmap tool with appropriate flags. This phase is more dangerous and traceable than the previous techniques because it requires an higher level of intrusiveness.
+\newline The objective of this phase is the service fingerprinting, i.e. the detection of the specific version and implementation of the service through an analysis of the service behaviour. 
+\newline The attacker uses the nmap flag -sV, which compares answers obtained with a service fingerprint database, to determine services version on the Web Server:
+\begin{center}
+\includegraphics[scale=0.76]{../Image/enumeration_company_sv.PNG}
+\end{center}
+The attacker grabs information about the Web Server: it is implemented with NodeJS and has a connection with a mySQL Database. Then, he does the same for the Employee computer:
+\begin{center}
+\includegraphics[scale=0.76]{../Image/enumeration_tom_sv.PNG}
+\end{center}
+On the other host, nmap determines that: the ssh service is implemented with a specific version of OpenSSH and the OS family is Ubuntu Linux. 
+
+
 \end{document}
