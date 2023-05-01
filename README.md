@@ -56,11 +56,11 @@ Using then `nmap` tool with these options:
 
 We found out some host IP:
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_company_network.PNG" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_company_network.png" width=500>
 
 **_Company Network_**
 
-<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_employee_network.PNG" width=500>
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_employee_network.png" width=500>
 
 **_Employee Network_**
 
@@ -70,7 +70,7 @@ We're interested in the Web Server and in Tom PC, so we can scan more aggressive
 
 If we use simply a TPC SYN scan from nmap, we find vague information:
 
-<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_company_ss.PNG" width=500>
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/scanning_company_ss.PNG" width=500>
 
 Else, if we explore more with a Version Detection scan, we can scan even beyond the typical use of a port like 8080:
 
