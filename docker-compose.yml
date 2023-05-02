@@ -3,7 +3,7 @@ name: "NSProject"
 services:
     mysqlserver:
         container_name: MySQLServer
-        build: ./MySQLServer/
+        build: .dockerfiles/mysqlserver/
         networks:
             - WebNetwork
         expose:
@@ -11,7 +11,7 @@ services:
 
     webserver:
         container_name: WebServer
-        build: ./WebServer/
+        build: .dockerfiles/webserver/
         depends_on:
             - mysqlserver
         environment:
@@ -24,7 +24,7 @@ services:
 
     vulnerable:
         container_name: TomPC
-        build: ./TomPC/
+        build: .dockerfiles/tompc/
         tty: true
         networks:
             - EmployeeNetwork
@@ -34,7 +34,7 @@ services:
 
     pentesting:
         container_name: BobPC
-        build: ./BobPC/
+        build: .dockerfiles/bobpc/
         tty: true
         networks:
             - EmployeeNetwork

@@ -141,9 +141,9 @@ The attacker Bob exploits the following nmap command to discover open services o
   \includegraphics[scale=0.76]{../Image/scanning_company_ss.PNG}
 \end{center}
 From the scan report, there are multiple open ports: \textit{http} on 8080, \textit{mysql} on 3306 and \textit{ssh} on 22. The attacker can assume that the target host 193.20.3.1 is a Web Server.
-\newline Then, he does the same for the node on the other subnet: (manca screen)
+\newline Then, he does the same for the node on the other subnet:
 \begin{center}
-  \includegraphics[scale=0.76]{../Image/enumeration_tom_sv.PNG}
+  \includegraphics[scale=0.76]{../Image/scanning_employee_ss.PNG}
 \end{center}
 From the scan report, there is only an open SSH 22/Tcp port.
 
@@ -258,9 +258,39 @@ obtaining this behaviour by the program:
   \includegraphics[scale=0.9]{../Image/privilege_escalation_exploit.PNG}
 \end{center}
 Finally, the attacker has obtainend root permissions on the machine.
+To eliminate the footprints on the target machine, he deletes:
+\begin{enumerate}
+  \item the ssh log files in textit{/var/log/};
+  \item the user tcasaccio1's bash history in \textit{/.bash\_history} to hide the exploitation process;
+  \item the user root's bash history to hide any post-exploitation actions;
+ \end{enumerate}
 
+ \begin{center}
+  \includegraphics[scale=0.9]{../Image/elimination_traces.PNG}
+\end{center}
 
 
 \chapter{Countermeasures and defenses}
+Some possible defenses to reduce or mitigate threats are divided based on the target asset.
+\section*{SSH protocol}
+\begin{itemize}
+  \item Use a stronger key-based authentication instead of password-based authentication and configure the server to only allow key-based authentication.
+  \item Change the default port 22 to prevent automated attacks from malicious actors.
+ \end{itemize}
+
+ \section*{Web Server}
+\begin{itemize}
+  \item Ensure that the login page is accessed over a secure connection using SSL/TLS encryption, this protects sensitive information, such as login credentials, from being intercepted by attackers.
+  \item Use strong authentication such as multi-factor authentication or password policies, to ensure that only authorized users can access the web application.
+  \item Use parameterized queries to protect against SQL injection attacks, which prevent attackers from injecting malicious code into SQL statements.
+  \item Avoid disclosure of unnecessary log details about application logic errors, such as login failure attempts.
+\end{itemize}
+
+\section*{Setuid program}
+\begin{itemize}
+\item SUID bit should not be set to any program which lets you escape to the shell.
+\item Perform input data sanitization and embed only predefined commands.
+\item Never set SUID bit on any file editor/compiler/interpreter as an attacker can easily read/overwrite any files present on the system.
+\end{itemize}
 
 \end{document}
