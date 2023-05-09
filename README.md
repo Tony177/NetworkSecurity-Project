@@ -42,9 +42,9 @@ You can start connecting to the pentesting PC with SSH using 2222 port
 
 ## Footprinting
 
-In this case scenario we're already connected to the local network, so we've already gathered enought information about our target
+In this case scenario we're already connected to the local network, so we've already gathered enought information about our target.
 
-## Scanning
+
 
 We start find out our IP address on the networks using `ifconfig` command, and we found out.
 
@@ -64,13 +64,17 @@ We found out some host IP:
 
 **_Employee Network_**
 
-## Enumeration
+## Scanning
 
 We're interested in the Web Server and in Tom PC, so we can scan more aggressively to find about any open port
 
 If we use simply a TPC SYN scan from nmap, we find vague information:
 
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/scanning_company_ss.PNG" width=500>
+
+<img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/scanning_employee_ss.PNG" width=500>
+
+## Enumeration
 
 Else, if we explore more with a Version Detection scan, we can scan even beyond the typical use of a port like 8080:
 
