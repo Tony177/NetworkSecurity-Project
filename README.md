@@ -74,19 +74,19 @@ If we use simply a TPC SYN scan from nmap, we find vague information:
 
 ## Enumeration
 
-Instead, if we explore deeply with a Version Detection scan with nmap, we can obtain service fingerprints on the hosts:
+Instead, if we explore deeply with a Version Detection scan through nmap, we can obtain service fingerprints on the hosts:
 
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/enumeration_company_sv.PNG" width=500>
 
-we have gathered information about the web server, which is implemented with NodeJS on port 8080 and has a connection with a MySQL database.
+The web server is implemented with NodeJS on port 8080 and has a connection with a MySQL database.
 
-Meanwhile on Tom PC, we found an open SSH port:
+Meanwhile on Tom PC, we found an OpenSSH port:
 
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/enumeration_tom_sv.PNG" width=500>
 
-Firstly we explore the website on the Web Server to find vulnerabilities, then exploit the open SSH port on Tom PC.
+Firstly, we explore the website on the Web Server to find vulnerabilities, then exploit the OpenSSH port on Tom PC.
 
-We retrieved the html page using `curl` and found out about a login form, which we can try to exploit.
+We retrieved the html page using `curl`, which contains a login form, that we can try to exploit.
 
 <img src="https://raw.githubusercontent.com/Tony177/NetworkSecurity-Project/main/Image/webserver_curl.png" width=500>
 
