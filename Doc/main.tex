@@ -102,21 +102,24 @@ Company Network: it connects all the employees to the company web service.
 The footprinting phase involves gathering information in the network regarding the target, in our case the organization and its members.
 \newline In this scenario, the attacker already knows information regarding the company and has managed to connect to the target local network.
 \newline Through the \textit{ifconfig} tool, he discovers the subnets to which he is connected: Employee Network, Company Network.
-\newline ifconfig screen
-\newline Using the \textit{nmap} tool, the attacker discovers the topology of the various subnets within the organization, identifying the IPs of potential target nodes.
+\begin{center}
+  \includegraphics[scale=0.6]{../Image/ifconfig_bob.png}
+\end{center}
+
+Using the \textit{nmap} tool, the attacker discovers the topology of the various subnets within the organization, identifying the IPs of potential target nodes.
 \begin{center}
 \includegraphics[scale=1]{../Image/footprinting_company_network.png}
 \end{center}
 \begin{center}
 \includegraphics[scale=0.76]{../Image/footprinting_employee_network.png}
 \end{center}
-From the top scan of the IP range 193.20.3.0/24, Bob found out one host up at 193.20.3.1 and its MAC Address. On the other subnet 193.20.1.0/24, there is another host up with the address 193.20.1.2.
+From the top scan of the IP range 193.20.3.0/24, Bob has found one host up at 193.20.3.1 and its MAC Address. On the other subnet 193.20.1.0/24, there is another host up with the address 193.20.1.2.
 
 \chapter{Scanning}
 In this phase, the attacker explores the entire network perimeter to gather information about 
 the target network in order to identify potential vulnerabilities and weak points that can be exploited.  
-\newline The scanning phase typically involves a combination of active and passive scanning methods. Active scanning involves 
-sending probe packets or requests to target systems to elicit a response, while passive scanning involves observing and analyzing network traffic without actually engaging with the target systems. 
+\newline The scanning phase typically involves a combination of active and passive scanning methods. Active scanning regards 
+sending probe packets or requests to target systems to elicit a response, while passive scanning concerns observing and analyzing network traffic without actually engaging with the target systems. 
 This is typically done using various scanning tools and techniques, including \textbf{\textit{Nmap}}: Network Mapper, a versatile and powerful tool with a range of options and features. 
 Here are some of the main options:
 \begin{itemize}
@@ -133,7 +136,7 @@ It has a number of flags or options that can be used to customize and fine-tune 
   \item \textbf{-sS}: This flag specifies the type of scan to be performed, in this case a SYN scan.
   \item \textbf{-sT}: This flag specifies a TCP connect scan, where Nmap attempts to establish a full TCP connection with the target ports.
   \item \textbf{-sU}: This flag specifies a UDP scan, where Nmap sends UDP packets to the target ports and listens for responses.
-  \item \textbf{-sC}: This flag specifies a scan usiong the default set of scripts. Some of the scripts in this category are considered intrusive.
+  \item \textbf{-sC}: This flag specifies a scan using the default set of scripts. Some of the scripts in this category are considered intrusive.
   \item \textbf{-O}: This flag enables operating system detection, allowing Nmap to identify the operating system running on the target system.
 \end{itemize}
 The attacker Bob exploits the following nmap command to discover open services on the target host 193.20.3.1:
@@ -141,7 +144,7 @@ The attacker Bob exploits the following nmap command to discover open services o
   \includegraphics[scale=0.76]{../Image/scanning_company_ss.PNG}
 \end{center}
 From the scan report, there are multiple open ports: \textit{http} on 8080, \textit{mysql} on 3306 and \textit{ssh} on 22. The attacker can assume that the target host 193.20.3.1 is a Web Server.
-\newline Then, he does the same for the node on the other subnet:
+\newline Then, he does the same for the node on the Employee subnet:
 \begin{center}
   \includegraphics[scale=0.76]{../Image/scanning_employee_ss.PNG}
 \end{center}
@@ -150,7 +153,7 @@ From the scan report, there is only an open SSH 22/Tcp port.
 \chapter{Enumeration}
 The primary goal of the enumeration phase is to identify potential targets for further exploitation and gain a deeper understanding of the target network's structure and architecture.
 After discovering the potential access points on the hosts, it is necessary to reveal other information regarding the active services on the detected ports. In the enumeration phase,
-active connections are created towards the target services by using the nmap tool with appropriate flags. This phase is more dangerous and traceable than the previous techniques because it requires an higher level of intrusiveness.
+active connections are created towards the target services by using the nmap tool with appropriate flags. This phase is more dangerous and traceable than the previous techniques, because it requires an higher level of intrusiveness.
 \newline The objective of this phase is the service fingerprinting, i.e. the detection of the specific version and implementation of the service through an analysis of the service behaviour. 
 \newline The attacker uses the nmap flag -sV, which compares answers obtained with a service fingerprint database, to determine services version on the Web Server:
 \begin{center}
@@ -165,7 +168,7 @@ On the other host, nmap determines that: the ssh service is implemented with a s
 \begin{center}
   \includegraphics[scale=0.66]{../Image/webserver_curl.PNG}
 \end{center}
-From the last command, the attacker Bob discovers a login page that may be exploited.
+From the last command, the attacker Bob has discovered a login page that may be exploited.
 Once vulnerabilities are identified, the attacker can move on to the next phase of the attack, the exploitation phase.
 
 \chapter{Exploitation}
