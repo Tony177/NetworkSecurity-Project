@@ -187,12 +187,12 @@ In this case, the attacker Bob uses a mix of remote exploits to gain root access
 The attacker starts from the company web service by filling the login form with different combinations:
 
 \begin{lstlisting}[style=DOS]
-$ curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
+$ curl -X POST -d 'username=&password=b' 193.20.3.1:8080 
 \end{lstlisting}
 In this case, the website uses an url-encoded form, so the attacker can send the data as an url-encoded string. This one returns "Error value(s) missing".
 \newline The attacker tries to tamper the form with another combination:
 \begin{lstlisting}[style=DOS]
-$ curl -X POST -d 'username=&password=b' 193.20.3.1:8080
+$ curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
 \end{lstlisting}
 which returns:
 \begin{lstlisting}[style=DOS]

@@ -54,13 +54,12 @@ Then, we discover some IPs using then `nmap` tool with these options:
 -   “-PE” sends ICMP Echo Request.
 -   “--send-ip” to not send ARP packets.
 
+**_Company Network:_**
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_company_network.png" width=500>
 
-**_Company Network_**
+**_Employee Network_:**
 
 <img src="https://github.com/Tony177/NetworkSecurity-Project/raw/main/Image/footprinting_employee_network.png" width=500>
-
-**_Employee Network_**
 
 ## Scanning
 
@@ -96,13 +95,13 @@ We retrieved the html page using `curl`, which contains a login form, that we ca
 We can try some usual combination for the form:
 
 ```bash
-curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
+curl -X POST -d 'username=&password=b' 193.20.3.1:8080
 ```
 
 Which returns "Error value(s) missing"
 
 ```bash
-curl -X POST -d 'username=&password=b' 193.20.3.1:8080
+curl -X POST -d 'username=a&password=b' 193.20.3.1:8080
 ```
 
 Which returns
