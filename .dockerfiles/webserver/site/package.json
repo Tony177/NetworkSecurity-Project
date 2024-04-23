@@ -27,7 +27,7 @@
     "express": "^4.19.2",
     "express-rate-limit": "^6.3.0",
     "express-session": "^1.17.2",
-    "mysql2": "^3.9.4",
+    "mysql2": "^3.9.7",
     "ol": "^7.1.0"
   },
   "devDependencies": {
